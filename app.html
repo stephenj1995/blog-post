@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+</head>
+<body ng-app="Blog-Post">
+    <div ng-controller="PostController">
+        <form>
+            <label>Create Post</label>
+            <input type="text" name="create-post" ng-model="newPost.postname">
+            <br>
+            <br>
+            <input type="hidden" ng-model="newPost.id">
+            <input type="hidden" ng-model="newPost.time">
+            <input type="button" value="Create Post" ng-click="savePost()">
+        </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Post</th>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <body>
+        <tr ng-repeat="post in posts">
+            <td>{{post.postname}}</td>
+            <td>{{post.time}}</td>
+            <td>
+                <a href="#" ng-click="like(post.id)">Like</a>||<a href="#" ng-click="dislike(post.id)">Dislike</a>
+            </td>
+            <td>{{post.count}}</td>
+        </tr>
+    </body>
+    </table>
+    </div>
+</div>
+</body>
+</html>
+<script type="text/javascript">
+     var uId = 0;
+     var count = 0;
+     var likes = 0;
+     var dislikes = 0;
+     var date= new Date();
+     var h = date.getHours();
+     var m = date.getMinutes();
+     var time = h + ":" + m;
+     setTimeout(time, 1000);
+
+     angular.module("Blog-Post", [])
+            .controller('PostController',['$scope', PostController]);
+
+     function PostController($scope)
+    {
+       $scope.newPost = null;
+       $scope.posts = [];
+       $scope.savePost = function()
+       {
+            if ($scope.newPost.id == null)
+            {
+                uId = uId+1;
+                $scope.newPost.id = uId;
+                $scope.posts.push($scope.newPost)
+                $scope.newPost.time = time;
+            }
+            else
+            {
+                for (var i in $scope.posts)
+                {
+                    if ($scope.posts[i].id == $scope.newPost.id)
+                    {
+                        $scope.posts[i] = $scope.newPost;
+                    }
+                }
+            }
+            $scope.newPost = null;
+        }
+        $scope.like = function(id)
+        {
+            for (var i in $scope.posts){
+                if ($scope.posts[i].id == id) {
+                    if($scope.posts[i].count == null)
+                    {
+                        likes = likes + 1;
+                        $scope.posts[i].count = likes;
+                    }
+                    else
+                    {
+                        for (var i in $scope.posts)
+                        {
+                            if ($scope.posts[i].count != null){
+                                var likescount = $scope.posts[i].count;
+                                likes = likescount + 1;
+                                $scope.posts[i].count = likes;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+</script>
